@@ -1,12 +1,17 @@
 import requests
 from bs4 import BeautifulSoup
 
-URL = "http://www.bcv.org.ve"
-r = requests.get(URL)
-soup = BeautifulSoup(r.content, 'html5lib')
+def getExchangeRates():
+  URL = "http://www.bcv.org.ve"
+  r = requests.get(URL)
+  soup = BeautifulSoup(r.content, 'html5lib')
 
-euro = soup.find(id="euro")
-dolar = soup.find(id="dolar")
+  euro = soup.find(id="euro").strong.getText().strip()
+  dolar = soup.find(id="dolar").strong.getText().strip()
+  date = soup.find(id="dolar").parent.find(property="dc:date").attrs['content']
 
-print(euro.strong.getText())
-print(dolar.strong.getText())
+  response = {"date": date, "dolar": dolar, "euro": euro}
+  return response
+
+
+print(getExchangeRates())
